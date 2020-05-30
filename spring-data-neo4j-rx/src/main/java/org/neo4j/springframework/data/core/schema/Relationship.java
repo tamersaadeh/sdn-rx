@@ -80,4 +80,12 @@ public @interface Relationship {
 	 * @return The direction of the relationship.
 	 */
 	Direction direction() default Direction.OUTGOING;
+
+	/**
+	 * If {@code deep} is {@code true}  (default) then the
+	 * {@link org.neo4j.springframework.data.repository.Neo4jRepository#save(Object)} and
+	 * {@link org.neo4j.springframework.data.repository.Neo4jRepository#saveAll(Iterable)} will also save nested
+	 * relationships.
+	 */
+	boolean deep() default true;
 }

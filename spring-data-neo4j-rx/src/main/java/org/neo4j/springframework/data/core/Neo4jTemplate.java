@@ -422,7 +422,7 @@ public final class Neo4jTemplate implements Neo4jOperations, BeanFactoryAware {
 
 			// break recursive procession and deletion of previously created relationships
 			RelationshipDescription relationshipObverse = relationshipContext.getRelationship().getRelationshipObverse();
-			if (hasProcessed(processedRelationshipDescriptions, relationshipObverse)) {
+			if (hasProcessed(processedRelationshipDescriptions, relationshipObverse) || !relationshipContext.getRelationship().isDeep()) {
 				return;
 			}
 

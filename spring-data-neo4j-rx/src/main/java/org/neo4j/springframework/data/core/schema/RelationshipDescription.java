@@ -132,4 +132,6 @@ public interface RelationshipDescription {
 	 * @return true if a logically same relationship in the target entity exists, otherwise false.
 	 */
 	boolean hasRelationshipObverse();
+
+	boolean isDeep();
 }

@@ -36,6 +36,7 @@ class DefaultRelationshipDescription extends Association<Neo4jPersistentProperty
 	private final String type;
 
 	private final boolean dynamic;
+	private final boolean deep;
 
 	private final NodeDescription<?> source;
 
@@ -51,7 +52,7 @@ class DefaultRelationshipDescription extends Association<Neo4jPersistentProperty
 
 	DefaultRelationshipDescription(Neo4jPersistentProperty inverse,
 		@Nullable RelationshipDescription relationshipObverse,
-		String type, boolean dynamic, NodeDescription<?> source, String fieldName, NodeDescription<?> target,
+		String type, boolean dynamic, boolean deep, NodeDescription<?> source, String fieldName, NodeDescription<?> target,
 		Relationship.Direction direction, @Nullable Class<?> relationshipPropertiesClass) {
 
 		// the immutable obverse association-wise is always null because we cannot determine them on both sides
@@ -61,6 +62,7 @@ class DefaultRelationshipDescription extends Association<Neo4jPersistentProperty
 		this.relationshipObverse = relationshipObverse;
 		this.type = type;
 		this.dynamic = dynamic;
+		this.deep = deep;
 		this.source = source;
 		this.fieldName = fieldName;
 		this.target = target;
@@ -76,6 +78,11 @@ class DefaultRelationshipDescription extends Association<Neo4jPersistentProperty
 	@Override
 	public boolean isDynamic() {
 		return dynamic;
+	}
+
+	@Override
+	public boolean isDeep() {
+		return deep;
 	}
 
 	@Override

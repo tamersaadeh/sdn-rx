@@ -42,14 +42,16 @@ final class NestedRelationshipContext {
 	private final Class<?> associationTargetType;
 
 	private final boolean inverseValueIsEmpty;
+	private final boolean deep;
 
 	private NestedRelationshipContext(Neo4jPersistentProperty inverse, Object value,
-		RelationshipDescription relationship, Class<?> associationTargetType, boolean inverseValueIsEmpty) {
+		RelationshipDescription relationship, Class<?> associationTargetType, boolean inverseValueIsEmpty, boolean deep) {
 		this.inverse = inverse;
 		this.value = value;
 		this.relationship = relationship;
 		this.associationTargetType = associationTargetType;
 		this.inverseValueIsEmpty = inverseValueIsEmpty;
+		this.deep = deep;
 	}
 
 	Neo4jPersistentProperty getInverse() {
@@ -105,12 +107,14 @@ final class NestedRelationshipContext {
 			.filter(r -> r.getFieldName().equals(inverse.getName()))
 			.findFirst().get();
 
+		boolean deep = relationship.isDeep();
+
 		// if we have a relationship with properties, the targetNodeType is the map key
 		Class<?> associationTargetType = relationship.hasRelationshipProperties()
 			? inverse.getComponentType()
 			: inverse.getAssociationTargetType();
 
 		return new NestedRelationshipContext(inverse, value, relationship, associationTargetType,
-			inverseValueIsEmpty);
+			inverseValueIsEmpty, deep);
 	}
 }

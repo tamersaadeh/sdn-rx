@@ -98,6 +98,11 @@ class DefaultNeo4jPersistentProperty extends AnnotationBasedPersistentProperty<N
 
 		boolean dynamicAssociation = this.isDynamicAssociation();
 
+		boolean dynamicDeep = true;
+		if (outgoingRelationship != null) {
+			dynamicDeep = outgoingRelationship.deep();
+		}
+
 		// Because a dynamic association is also represented as a Map, this ensures that the
 		// relationship properties class will only have a value if it's not a dynamic association.
 		Class<?> relationshipPropertiesClass = dynamicAssociation ? null : getMapValueType();
@@ -109,8 +114,8 @@ class DefaultNeo4jPersistentProperty extends AnnotationBasedPersistentProperty<N
 			.findFirst();
 
 		DefaultRelationshipDescription relationshipDescription = new DefaultRelationshipDescription(this,
-			obverseRelationshipDescription.orElse(null), type, dynamicAssociation, (NodeDescription<?>) getOwner(),
-			this.getName(), obverseOwner, direction, relationshipPropertiesClass);
+			obverseRelationshipDescription.orElse(null), type, dynamicAssociation, dynamicDeep,
+			(NodeDescription<?>) getOwner(), this.getName(), obverseOwner, direction, relationshipPropertiesClass);
 
 		// Update the previous found, if any, relationship with the newly created one as its counterpart.
 		obverseRelationshipDescription
