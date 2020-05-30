@@ -422,7 +422,7 @@ public final class Neo4jTemplate implements Neo4jOperations, BeanFactoryAware {
 
 			// break recursive procession and deletion of previously created relationships
 			RelationshipDescription relationshipObverse = relationshipContext.getRelationship().getRelationshipObverse();
-			if (hasProcessed(processedRelationshipDescriptions, relationshipObverse) || !relationshipContext.getRelationship().isDeep()) {
+			if (hasProcessed(processedRelationshipDescriptions, relationshipObverse)) {
 				return;
 			}
 
@@ -486,7 +486,10 @@ public final class Neo4jTemplate implements Neo4jOperations, BeanFactoryAware {
 					targetPropertyAccessor
 						.setProperty(targetNodeDescription.getRequiredIdProperty(), relatedInternalId);
 				}
-				processNestedAssociations(targetNodeDescription, valueToBeSaved, inDatabase, processedRelationshipDescriptions);
+				if (relationshipContext.getRelationship().isDeep()) {
+					processNestedAssociations(targetNodeDescription, valueToBeSaved, inDatabase,
+						processedRelationshipDescriptions);
+				}
 			}
 		});
 	}

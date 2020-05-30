@@ -1029,6 +1029,23 @@ class RepositoryIT {
 		}
 
 		@Test
+		void saveEntityWithUndirectedSelfRelationship(
+			@Autowired PersonWithShallowRelationshipRepository repository) {
+			// given
+			PersonWithShallowRelationship donald = new PersonWithShallowRelationship("Donald Duck");
+			PersonWithShallowRelationship daisy = new PersonWithShallowRelationship("Daisy Duck");
+
+			donald.knows(daisy);
+			daisy.knows(donald);
+
+			PersonWithShallowRelationship savedDonald = repository.save(donald);
+			PersonWithShallowRelationship savedDaisy = repository.save(daisy);
+
+			assertThat(savedDonald).isIn(savedDaisy.getKnows());
+			assertThat(savedDaisy).isIn(savedDonald.getKnows());
+		}
+
+		@Test
 		void findEntityWithRelationshipWithPropertiesFromCustomQuery(
 			@Autowired PersonWithRelationshipWithPropertiesRepository repository) {
 
@@ -2865,6 +2882,9 @@ class RepositoryIT {
 		PersonWithRelationshipWithProperties findByHobbiesSinceOrHobbiesActive(int since1, boolean active);
 
 		PersonWithRelationshipWithProperties findByHobbiesSinceAndHobbiesActive(int since1, boolean active);
+	}
+
+	interface PersonWithShallowRelationshipRepository extends Neo4jRepository<PersonWithShallowRelationship, Long> {
 	}
 
 	interface PetRepository extends Neo4jRepository<Pet, Long> {
