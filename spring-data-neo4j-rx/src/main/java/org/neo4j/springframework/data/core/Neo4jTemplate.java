@@ -48,6 +48,7 @@ import org.neo4j.springframework.data.core.mapping.Neo4jPersistentEntity;
 import org.neo4j.springframework.data.core.mapping.Neo4jPersistentProperty;
 import org.neo4j.springframework.data.core.schema.CypherGenerator;
 import org.neo4j.springframework.data.core.schema.NodeDescription;
+import org.neo4j.springframework.data.core.schema.Relationship;
 import org.neo4j.springframework.data.core.schema.RelationshipDescription;
 import org.neo4j.springframework.data.core.support.Relationships;
 import org.neo4j.springframework.data.repository.NoResultException;
@@ -476,7 +477,10 @@ public final class Neo4jTemplate implements Neo4jOperations, BeanFactoryAware {
 					targetPropertyAccessor
 						.setProperty(targetNodeDescription.getRequiredIdProperty(), relatedInternalId);
 				}
-				processNestedAssociations(targetNodeDescription, valueToBeSaved, inDatabase, processedRelationshipDescriptions);
+				if (relationshipContext.getRelationship().getDirection() != Relationship.Direction.UNDIRECTED) {
+					processNestedAssociations(targetNodeDescription, valueToBeSaved, inDatabase,
+						processedRelationshipDescriptions);
+				}
 			}
 		});
 	}

@@ -55,7 +55,12 @@ public @interface Relationship {
 		/**
 		 * Describes an incoming relationship.
 		 */
-		INCOMING
+		INCOMING,
+
+		/**
+		 * Describes an undirected relationship.
+		 */
+		UNDIRECTED
 	}
 
 	/**
