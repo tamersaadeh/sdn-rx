@@ -1029,6 +1029,32 @@ class RepositoryIT {
 		}
 
 		@Test
+		void saveEntityWithUndirectedSelfRelationship(
+			@Autowired PersonWithShallowRelationshipRepository repository) {
+			PersonWithUndirectedRelationship donald = new PersonWithUndirectedRelationship("Donald Duck");
+			PersonWithUndirectedRelationship daisy = new PersonWithUndirectedRelationship("Daisy Duck");
+
+			donald.beFriend(daisy);
+
+			PersonWithUndirectedRelationship savedDonald = repository.save(donald);
+			PersonWithUndirectedRelationship savedDaisy = repository.save(daisy);
+
+			PersonWithUndirectedRelationship retrievedDonald = repository.findById(savedDonald.getId()).orElse(null);
+			PersonWithUndirectedRelationship retrievedDaisy = repository.findById(savedDaisy.getId()).orElse(null);
+
+			assertThat(retrievedDonald).isNotNull();
+			assertThat(retrievedDaisy).isNotNull();
+
+			assertThat(savedDonald).isIn(savedDaisy.getFriends());
+			assertThat(savedDonald).isIn(retrievedDaisy.getFriends());
+			assertThat(retrievedDonald).isIn(savedDaisy.getFriends());
+
+			assertThat(savedDaisy).isIn(savedDonald.getFriends());
+			assertThat(savedDaisy).isIn(retrievedDonald.getFriends());
+			assertThat(retrievedDaisy).isIn(savedDonald.getFriends());
+		}
+
+		@Test
 		void findEntityWithRelationshipWithPropertiesFromCustomQuery(
 			@Autowired PersonWithRelationshipWithPropertiesRepository repository) {
 
@@ -2865,6 +2891,9 @@ class RepositoryIT {
 		PersonWithRelationshipWithProperties findByHobbiesSinceOrHobbiesActive(int since1, boolean active);
 
 		PersonWithRelationshipWithProperties findByHobbiesSinceAndHobbiesActive(int since1, boolean active);
+	}
+
+	interface PersonWithShallowRelationshipRepository extends Neo4jRepository<PersonWithUndirectedRelationship, Long> {
 	}
 
 	interface PetRepository extends Neo4jRepository<Pet, Long> {
